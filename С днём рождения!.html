@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>С Днём Рождения, Сестрёнка! 🎉 24 года</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Caveat:wght@700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            pink: '#FF2E93',
+                            purple: '#FF007A',
+                            dark: '#0B0B12',
+                            card: 'rgba(23, 23, 35, 0.65)',
+                            accent: '#8B5CF6'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        hand: ['Caveat', 'cursive']
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-12px)' },
+                        },
+                        glow: {
+                            '0%': { boxShadow: '0 0 15px rgba(255, 46, 147, 0.3)' },
+                            '100%': { boxShadow: '0 0 35px rgba(255, 46, 147, 0.8)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
+            color: #0f172a;
+            overflow-x: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Plus Jakarta Sans", sans-serif;
+        }
+
+        /* Light Minimal Glassmorphism */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+
+        .glass-button {
+            background: rgba(15, 23, 42, 0.9);
+            color: #ffffff;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .glass-button:hover {
+            transform: translateY(-2px) scale(1.02);
+            background: #000000;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #0f172a 0%, #475569 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(15, 23, 42, 0.2);
+            border-radius: 99px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(15, 23, 42, 0.4);
+        }
+
+        /* Scratch Canvas Styling */
+        .scratch-container {
+            position: relative;
+            user-select: none;
+        }
+
+        canvas.scratch-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            touch-action: none;
+            border-radius: 1rem;
+        }
+    </style>
+</head>
+<body class="min-h-screen relative font-sans text-slate-900 antialiased selection:bg-slate-900 selection:text-white pb-20">
+
+    <!-- Ambient Glow BG Elements -->
+    <div class="fixed top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/60 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="fixed bottom-10 right-10 w-[400px] h-[400px] bg-slate-200/50 rounded-full blur-[100px] pointer-events-none"></div>
+
+    <!-- Content Wrapper -->
+    <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 space-y-12">
+
+        <!-- HEADER SECTION -->
+        <header class="text-center space-y-4">
+            <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight">
+                С Днём Рождения, <br/>
+                <span class="gradient-text">Сестрёнка!</span>
+            </h1>
+            
+            <p class="text-slate-600 text-base sm:text-lg max-w-xl mx-auto font-light">
+                Тебе исполняется <span class="text-slate-900 font-bold text-xl">24</span>! Этот сайтик я сделал специально для тебя.
+            </p>
+        </header>
+
+        <!-- SECTION 1: COUNTER -->
+        <section class="glass-panel rounded-3xl p-6 sm:p-8 relative overflow-hidden">
+            <div class="text-center mb-6">
+                <h2 class="text-xl sm:text-2xl font-bold flex items-center justify-center gap-2 text-slate-900">
+                    <i data-lucide="clock" class="text-slate-700"></i>
+                    Ты украшаешь этот мир уже:
+                </h2>
+                <p class="text-xs text-slate-500 mt-1">Отсчёт с 05:50 утра, 31 октября 2002 года</p>
+            </div>
+
+            <div id="counter" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-center">
+                <div class="glass-panel p-3 rounded-2xl flex flex-col items-center justify-center">
+                    <span id="val-years" class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">00</span>
+                    <span class="text-xs text-slate-500 font-medium uppercase mt-1">Лет</span>
+                </div>
+                <div class="glass-panel p-3 rounded-2xl flex flex-col items-center justify-center">
+                    <span id="val-months" class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">00</span>
+                    <span class="text-xs text-slate-500 font-medium uppercase mt-1">Месяцев</span>
+                </div>
+                <div class="glass-panel p-3 rounded-2xl flex flex-col items-center justify-center">
+                    <span id="val-days" class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">00</span>
+                    <span class="text-xs text-slate-500 font-medium uppercase mt-1">Дней</span>
+                </div>
+                <div class="glass-panel p-3 rounded-2xl flex flex-col items-center justify-center">
+                    <span id="val-hours" class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">00</span>
+                    <span class="text-xs text-slate-500 font-medium uppercase mt-1">Часов</span>
+                </div>
+                <div class="glass-panel p-3 rounded-2xl flex flex-col items-center justify-center">
+                    <span id="val-minutes" class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">00</span>
+                    <span class="text-xs text-slate-500 font-medium uppercase mt-1">Минут</span>
+                </div>
+                <div class="glass-panel p-3 rounded-2xl flex flex-col items-center justify-center">
+                    <span id="val-seconds" class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">00</span>
+                    <span class="text-xs text-slate-500 font-medium uppercase mt-1">Секунд</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: SECRET TICKETS & MEMORIES -->
+        <section class="space-y-6">
+            <div class="text-center space-y-2">
+                <h2 class="text-2xl sm:text-3xl font-bold flex items-center justify-center gap-2 text-slate-900">
+                    <i data-lucide="ticket" class="text-slate-700"></i>
+                    Секретные бонусы & карточки
+                </h2>
+                <p class="text-slate-500 text-sm">Сотри защитный слой пальцем или мышкой, чтобы активировать подарок от брата!</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="scratchGrid">
+                <!-- Scratch cards rendered via JS -->
+            </div>
+        </section>
+
+        <!-- SECTION 3: MINI QUIZ -->
+        <section class="glass-panel rounded-3xl p-6 sm:p-8 space-y-6">
+            <div class="text-center space-y-2">
+                <div class="inline-block p-3 bg-slate-100 rounded-2xl text-slate-800">
+                    <i data-lucide="help-circle" class="w-7 h-7"></i>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Тест: Знаешь ли ты себя в 24?</h2>
+                <p class="text-slate-500 text-sm">Проверь, насколько ты готова к этому возрасту!</p>
+            </div>
+
+            <div id="quizContainer" class="max-w-xl mx-auto space-y-4">
+                <!-- Quiz dynamically loaded -->
+            </div>
+        </section>
+
+        <!-- SECTION 5: FINAL LOVE & WISHES CARD -->
+        <section class="glass-panel rounded-3xl p-8 text-center space-y-6 relative overflow-hidden border border-white">
+            <div class="relative z-10 space-y-4">
+                <i data-lucide="heart" class="w-12 h-12 text-slate-800 mx-auto fill-slate-800 animate-pulse"></i>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900">Главное Поздравление</h2>
+                
+                <p class="font-hand text-2xl sm:text-3xl text-slate-700 leading-relaxed max-w-2xl mx-auto">
+                    «Дорогая сестрёнка! 24 года — это классный возраст, когда перед тобой открыты все двери. Желаю тебе кайфовать от каждого дня, добиваться всех своих целей, никогда не сомневаться в себе и оставаться такой же невероятной! Помни, что у тебя есть я — твой брат, который всегда на твоей стороне, готов помочь, выслушать и прийти на помощь в любой момент.»
+                </p>
+
+                <div class="pt-4">
+                    <button id="loveBtn" class="glass-button font-bold px-10 py-4 rounded-2xl text-xl inline-flex items-center gap-3 hover:scale-105 active:scale-95 transition-all">
+                        <i data-lucide="sparkles" class="w-6 h-6"></i>
+                        <span>Запустить праздничный салют!</span>
+                    </button>
+                </div>
+
+                <div class="pt-6 border-t border-slate-200 text-xs text-slate-400">
+                    Сделано с душой и любовью специально для лучшей сестры
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- MAIN APP SCRIPT -->
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // -------------------------------------------------------------
+        // LIVE TIME COUNTER (Oct 31, 2002, 05:50 AM) - OPTIMIZED NO BLINK
+        // -------------------------------------------------------------
+        const birthDate = new Date('2002-10-31T05:50:00');
+        
+        const elYears = document.getElementById('val-years');
+        const elMonths = document.getElementById('val-months');
+        const elDays = document.getElementById('val-days');
+        const elHours = document.getElementById('val-hours');
+        const elMinutes = document.getElementById('val-minutes');
+        const elSeconds = document.getElementById('val-seconds');
+
+        function updateCounter() {
+            const now = new Date();
+            const diffMs = now - birthDate;
+
+            const seconds = Math.floor((diffMs / 1000) % 60);
+            const minutes = Math.floor((diffMs / (1000 * 60)) % 60);
+            const hours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
+            const days = Math.floor((diffMs / (1000 * 60 * 60 * 24)) % 30.4375);
+            const months = Math.floor((diffMs / (1000 * 60 * 60 * 24 * 30.4375)) % 12);
+            const years = Math.floor(diffMs / (1000 * 60 * 60 * 24 * 365.25));
+
+            if (elYears) elYears.textContent = String(years).padStart(2, '0');
+            if (elMonths) elMonths.textContent = String(months).padStart(2, '0');
+            if (elDays) elDays.textContent = String(days).padStart(2, '0');
+            if (elHours) elHours.textContent = String(hours).padStart(2, '0');
+            if (elMinutes) elMinutes.textContent = String(minutes).padStart(2, '0');
+            if (elSeconds) elSeconds.textContent = String(seconds).padStart(2, '0');
+        }
+        setInterval(updateCounter, 1000);
+        updateCounter();
+
+        // -------------------------------------------------------------
+        // SCRATCH CARDS
+        // -------------------------------------------------------------
+        const scratchData = [
+            { title: "Вечер совместного фильма", desc: "Подборка любого фильма или сериала на твой выбор без споров о жанре." },
+            { title: "Безлимитный иммунитет", desc: "Полная защита от любых подколов, подшучиваний и споров с моей стороны." },
+            { title: "Срочный экспресс-заказ", desc: "Доставка любой твоей любимой еды или вкусняшек в любой момент." },
+            { title: "Братская техподдержка", desc: "Помощь с любыми делами, вопросами или просто выслушать 24/7." }
+        ];
+
+        const scratchGrid = document.getElementById('scratchGrid');
+
+        scratchData.forEach((item, idx) => {
+            const cardEl = document.createElement('div');
+            cardEl.className = "scratch-container glass-panel p-6 rounded-2xl h-40 flex flex-col justify-center items-center text-center relative overflow-hidden";
+            cardEl.innerHTML = `
+                <div class="space-y-2">
+                    <h3 class="text-lg font-bold text-slate-900">${item.title}</h3>
+                    <p class="text-sm text-slate-600 font-medium">${item.desc}</p>
+                </div>
+                <canvas id="scratchCanvas${idx}" class="scratch-canvas"></canvas>
+            `;
+            scratchGrid.appendChild(cardEl);
+
+            setTimeout(() => {
+                initScratchCard(`scratchCanvas${idx}`);
+            }, 100);
+        });
+
+        function initScratchCard(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const rect = canvas.getBoundingClientRect();
+            
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+
+            // Fill with light silver layer
+            ctx.fillStyle = '#e2e8f0';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Add text overlay on scratch layer
+            ctx.fillStyle = '#64748b';
+            ctx.font = '600 13px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('Сотри пальцем слой', canvas.width / 2, canvas.height / 2 + 4);
+
+            let isDrawing = false;
+
+            function scratch(e) {
+                if (!isDrawing) return;
+                const bounds = canvas.getBoundingClientRect();
+                const x = (e.clientX || (e.touches && e.touches[0].clientX)) - bounds.left;
+                const y = (e.clientY || (e.touches && e.touches[0].clientY)) - bounds.top;
+
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.beginPath();
+                ctx.arc(x, y, 20, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            canvas.addEventListener('mousedown', () => isDrawing = true);
+            canvas.addEventListener('touchstart', () => isDrawing = true);
+            window.addEventListener('mouseup', () => isDrawing = false);
+            window.addEventListener('touchend', () => isDrawing = false);
+            canvas.addEventListener('mousemove', scratch);
+            canvas.addEventListener('touchmove', scratch);
+        }
+
+        // -------------------------------------------------------------
+        // MINI QUIZ LOGIC
+        // -------------------------------------------------------------
+        const quizData = [
+            {
+                question: "Что самое главное при наступлении 24 лет?",
+                answers: [
+                    "Осознать, что 25 уже близко...",
+                    "Радоваться жизни и покупать всё, что хочется!",
+                    "Начать спать по 8 часов"
+                ],
+                correct: 1
+            },
+            {
+                question: "Кто лучший брат во Вселенной?",
+                answers: [
+                    "Тот, кто создал этот сайт!",
+                    "Тот, кто дарит крутые подарки!",
+                    "Все варианты абсолютно верны!"
+                ],
+                correct: 2
+            }
+        ];
+
+        let currentQuestion = 0;
+        const quizContainer = document.getElementById('quizContainer');
+
+        function renderQuiz() {
+            if (currentQuestion >= quizData.length) {
+                quizContainer.innerHTML = `
+                    <div class="text-center p-6 bg-slate-100 rounded-2xl border border-slate-200 space-y-3">
+                        <i data-lucide="check-circle-2" class="w-12 h-12 text-slate-800 mx-auto"></i>
+                        <h3 class="text-xl font-bold text-slate-900">Тест пройден на 100%!</h3>
+                        <p class="text-sm text-slate-600">Официально подтверждено: ты на 100% готова к 24 годам и находишься в своей лучшей форме!</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                confetti({ particleCount: 50, spread: 60 });
+                return;
+            }
+
+            const q = quizData[currentQuestion];
+            quizContainer.innerHTML = `
+                <div class="space-y-4">
+                    <h3 class="text-lg font-semibold text-center text-slate-800">${q.question}</h3>
+                    <div class="space-y-2">
+                        ${q.answers.map((ans, idx) => `
+                            <button onclick="handleAnswer(${idx})" class="w-full text-left p-4 rounded-xl glass-panel hover:bg-white hover:border-slate-300 transition-all font-medium flex items-center justify-between group text-slate-800">
+                                <span>${ans}</span>
+                                <i data-lucide="arrow-right" class="w-4 h-4 text-slate-800 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        function handleAnswer(index) {
+            currentQuestion++;
+            renderQuiz();
+        }
+
+        renderQuiz();
+
+        // -------------------------------------------------------------
+        // LOVE BUTTON CONFETTI
+        // -------------------------------------------------------------
+        const loveBtn = document.getElementById('loveBtn');
+        loveBtn.addEventListener('click', () => {
+            const duration = 3 * 1000;
+            const end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#0f172a', '#64748b', '#cbd5e1']
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#0f172a', '#64748b', '#cbd5e1']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            })();
+        });
+    </script>
+</body>
+</html>
